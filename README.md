@@ -1,70 +1,40 @@
-# Getting Started with Create React App
+# Проект: Место (версия на react + Хуки)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Обзор
 
-## Available Scripts
+- Интро
+- Реализованный функционал
+- Какие технологии используются
 
-In the project directory, you can run:
+**Интро**
 
-### `npm start`
+- Небольшой проект Место с карточками фотографий и подписями к ним.
+- Первый опыт работы с React и использовани Хуков.
+- [Ссылка на GitHub Pages](https://chepash.github.io/mesto-react/)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+**Реализованный функционал**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- карточки, полученные с сервера, добавляются на страницу с помощью JS;
+- при наведении указателя мыши на аватар, на нём появляется иконка редактирования;
+- при клике на аватар открывается модальное окно редактирования аватарки пользователя;
+- карточки отображаются на странице только после получения id пользователя;
+- у карточек отображается количество лайков;
+- визуальные эфекты при работе с интерактивными элеменетами;
+- форма добавления карточки свёрстана, открывается.. и пока всё;
+- при удалении карточки появляется модальное окно для подтверждения удаления;
+- модальные окна закрываются на любых разрешениях экрана;
+- модальное окно с картинкой открывается, изображение не теряет пропорции;
+- реализовано плавное открытие и закрытие модального окна CSS-стилями;
+- модальное окно закрывается по в клику любом месте вне этого окна и по нажатию на Esc.
 
-### `npm test`
+**Какие технологии используются**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- использование файловой структуры CSS Nested по методолгии БЭМ;
+- CSS grid;
+- CSS flex;
+- JavaScript код объектно-ориентирован:
+  - Использованы ES6-классы;
+  - работа с Promise и API;
+- React:
+  - использование утилиты Create React App;
+  - Хуки;

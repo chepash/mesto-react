@@ -10,11 +10,10 @@ function PopupWithForm(props) {
 
   React.useEffect(() => {
     document.addEventListener("keydown", handleEscClose);
-    return () => {};
-  }, []);
+  }, [props.isOpen]);
 
   function handlePopupOverlayClick(e) {
-    if (e.currentTarget == e.target) {
+    if (e.currentTarget === e.target) {
       props.onClose();
     }
   }

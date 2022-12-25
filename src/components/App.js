@@ -3,29 +3,38 @@ import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
-import PopupWithImage from "./PopupWithImage";
+import ImagePopup from "./ImagePopup";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
+  const [isPopupWithImageOpen, setPopupWithImageOpen] = React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState({});
+
+  function handleCardClick(cardData) {
+    setPopupWithImageOpen(true);
+    setSelectedCard(cardData);
+  }
 
   function handleEditProfileClick() {
-    setEditProfilePopupOpen(!isEditProfilePopupOpen);
+    setEditProfilePopupOpen(true);
   }
 
   function handleAddPlaceClick() {
-    setAddPlacePopupOpen(!isAddPlacePopupOpen);
+    setAddPlacePopupOpen(true);
   }
 
   function handleEditAvatarClick() {
-    setEditAvatarPopupOpen(!isEditAvatarPopupOpen);
+    setEditAvatarPopupOpen(true);
   }
 
   function closeAllPopups() {
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
+    setPopupWithImageOpen(false);
+    setSelectedCard({});
   }
 
   return (
@@ -36,6 +45,7 @@ function App() {
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
+          onCardClick={handleCardClick}
         />
         <Footer />
       </div>
@@ -172,25 +182,7 @@ function App() {
       />
 
       {/* popup просмотра изображения */}
-      <PopupWithImage isOpen={false} />
-
-      {/* template картоки */}
-      <template className="template_type_card">
-        <li className="element">
-          <img src="#" alt="Альтернативный текст" className="element__image" />
-          <button type="button" aria-label="Удалить" className="button button_type_delete"></button>
-          <div className="element__footer">
-            <p className="element__caption">Подпись</p>
-            <div className="element__like-wrap">
-              <button
-                type="button"
-                aria-label="Нравится"
-                className="button button_type_like"></button>
-              <p className="element__like-count">0</p>
-            </div>
-          </div>
-        </li>
-      </template>
+      <ImagePopup card={selectedCard} isOpen={isPopupWithImageOpen} onClose={closeAllPopups} />
     </>
   );
 }

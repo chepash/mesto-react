@@ -1,30 +1,27 @@
 import React from "react";
 
-function PopupWithImage(props) {
+function ImagePopup(props) {
   function handleEscClose(e) {
     if (e.key === "Escape") {
+      document.removeEventListener("keydown", handleEscClose);
       props.onClose();
     }
   }
 
   React.useEffect(() => {
     document.addEventListener("keydown", handleEscClose);
-
-    return () => {
-      document.removeEventListener("keydown", handleEscClose);
-    };
-  }, []);
+  }, [props.isOpen]);
 
   function handlePopupOverlayClick(e) {
-    if (e.currentTarget == e.target) {
+    if (e.currentTarget === e.target) {
       props.onClose();
     }
   }
 
   return (
     <section
-      className={`popup section popup_type_${props.name} ${props.isOpen ? "popup_opened" : ""}`}
-      aria-label={`${props.ariaLable}`}
+      className={`popup section popup_type_image ${props.isOpen ? "popup_opened" : ""}`}
+      aria-label="Всплывающее окно: Просмотр карточки"
       onClick={handlePopupOverlayClick}>
       <button
         type="button"
@@ -32,11 +29,11 @@ function PopupWithImage(props) {
         className="button button_type_close popup__close"
         onClick={props.onClose}></button>
       <figure className="popup__image-container">
-        <img className="popup__image" src="#" alt="Название места" />
-        <figcaption className="popup__image-caption">Название места</figcaption>
+        <img className="popup__image" src={props.card.link} alt={props.card.name} />
+        <figcaption className="popup__image-caption">{props.card.name}</figcaption>
       </figure>
     </section>
   );
 }
 
-export default PopupWithImage;
+export default ImagePopup;
