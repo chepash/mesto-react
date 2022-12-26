@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 
 function PopupWithForm(props) {
   function handleEscClose(e) {
@@ -8,7 +8,7 @@ function PopupWithForm(props) {
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener("keydown", handleEscClose);
   }, [props.isOpen]);
 
@@ -38,6 +38,10 @@ function PopupWithForm(props) {
           <h2 className="form__title">{props.title}</h2>
 
           {props.children}
+
+          <button type="submit" className="button button_type_submit">
+            {props.buttonSubmitText}
+          </button>
         </form>
       </div>
     </section>

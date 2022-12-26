@@ -1,16 +1,16 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import Card from "./Card";
 import defaultAvatarPic from "../images/default_profile_pic.jpg";
 import { api } from "../utils/api.js";
 
-function Main(props) {
-  const [userName, setUserName] = React.useState("...");
-  const [userDescription, setUserDescription] = React.useState("...");
-  const [userAvatar, setUserAvatar] = React.useState(defaultAvatarPic);
-  const [myId, setMyId] = React.useState("...");
-  const [cards, setCards] = React.useState([]);
+function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
+  const [userName, setUserName] = useState("...");
+  const [userDescription, setUserDescription] = useState("...");
+  const [userAvatar, setUserAvatar] = useState(defaultAvatarPic);
+  const [myId, setMyId] = useState("...");
+  const [cards, setCards] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userDataFromServer, initialCardsFromServer]) => {
         setUserName(userDataFromServer.name);
@@ -29,7 +29,7 @@ function Main(props) {
   return (
     <main className="content section section_size_narrow page__content">
       <section className="profile section content__section" aria-label="Профиль автора">
-        <div className="profile__avatar-overlay" onClick={props.onEditAvatar}>
+        <div className="profile__avatar-overlay" onClick={onEditAvatar}>
           <img src={userAvatar} alt="Картинка профиля" className="profile__avatar" />
         </div>
 
@@ -40,20 +40,15 @@ function Main(props) {
             type="button"
             aria-label="Редактировать"
             className="button button_type_edit"
-            onClick={props.onEditProfile}></button>
+            onClick={onEditProfile}></button>
         </div>
-        <button
-          type="button"
-          className="button button_type_add"
-          onClick={props.onAddPlace}></button>
+        <button type="button" className="button button_type_add" onClick={onAddPlace}></button>
       </section>
 
       <section className="elements section content__section" aria-label="Фотографии">
         <ul className="elements__list page__list">
           {cards.map((card) => {
-            return (
-              <Card key={card._id} cardData={card} myId={myId} onCardClick={props.onCardClick} />
-            );
+            return <Card key={card._id} cardData={card} myId={myId} onCardClick={onCardClick} />;
           })}
         </ul>
       </section>

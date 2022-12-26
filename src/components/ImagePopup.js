@@ -1,36 +1,36 @@
-import React from "react";
+import { useEffect } from "react";
 
-function ImagePopup(props) {
+function ImagePopup({ onClose, isOpen, card }) {
   function handleEscClose(e) {
     if (e.key === "Escape") {
       document.removeEventListener("keydown", handleEscClose);
-      props.onClose();
+      onClose();
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener("keydown", handleEscClose);
-  }, [props.isOpen]);
+  }, [isOpen]);
 
   function handlePopupOverlayClick(e) {
     if (e.currentTarget === e.target) {
-      props.onClose();
+      onClose();
     }
   }
 
   return (
     <section
-      className={`popup section popup_type_image ${props.isOpen ? "popup_opened" : ""}`}
+      className={`popup section popup_type_image ${isOpen ? "popup_opened" : ""}`}
       aria-label="Всплывающее окно: Просмотр карточки"
       onClick={handlePopupOverlayClick}>
       <button
         type="button"
         aria-label="Закрыть"
         className="button button_type_close popup__close"
-        onClick={props.onClose}></button>
+        onClick={onClose}></button>
       <figure className="popup__image-container">
-        <img className="popup__image" src={props.card.link} alt={props.card.name} />
-        <figcaption className="popup__image-caption">{props.card.name}</figcaption>
+        <img className="popup__image" src={card.link} alt={card.name} />
+        <figcaption className="popup__image-caption">{card.name}</figcaption>
       </figure>
     </section>
   );
