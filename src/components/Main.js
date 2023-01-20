@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Card from "./Card";
 import defaultAvatarPic from "../images/default_profile_pic.jpg";
 import { api } from "../utils/api.js";
+import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
+  const currentUser = useContext(CurrentUserContext);
+
   const [userName, setUserName] = useState("...");
   const [userDescription, setUserDescription] = useState("...");
   const [userAvatar, setUserAvatar] = useState(defaultAvatarPic);
@@ -17,6 +20,7 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
         setUserDescription(userDataFromServer.about);
         setUserAvatar(userDataFromServer.avatar);
         setMyId(userDataFromServer._id);
+
         setCards(initialCardsFromServer);
 
         return userDataFromServer;
