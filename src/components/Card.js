@@ -1,7 +1,15 @@
-function Card({ cardData, myId, onCardClick }) {
-  const isCardLikedByMe = cardData.likes.some((ownerData) => {
-    return ownerData._id === myId;
+import { useContext } from "react";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
+
+function Card({ cardData, onCardClick }) {
+  const currentUser = useContext(CurrentUserContext);
+
+  const isLikedByMe = cardData.likes.some((ownerData) => {
+    return ownerData._id === currentUser._id;
   });
+
+  // Определяем, являемся ли мы владельцем текущей карточки
+  const isOwn = cardData.owner._id === currentUser._id;
 
   function handleClick() {
     onCardClick(cardData);
@@ -16,7 +24,7 @@ function Card({ cardData, myId, onCardClick }) {
         className="element__image"
       />
 
-      {cardData.owner._id === myId && (
+      {isOwn && (
         <button type="button" aria-label="Удалить" className="button button_type_delete"></button>
       )}
 
@@ -26,9 +34,7 @@ function Card({ cardData, myId, onCardClick }) {
           <button
             type="button"
             aria-label="Нравится"
-            className={`button button_type_like ${
-              isCardLikedByMe ? "button_active" : ""
-            }`}></button>
+            className={`button button_type_like ${isLikedByMe ? "button_active" : ""}`}></button>
           <p className="element__like-count">{cardData.likes.length}</p>
         </div>
       </div>
