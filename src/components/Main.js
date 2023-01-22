@@ -11,16 +11,33 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
 
   useEffect(() => {
     api
-      .getInitialCards()
-      .then((initialCardsFromServer) => {
-        setCards(initialCardsFromServer);
-
-        return currentUser;
+      .getCardList()
+      .then((CardsFromServer) => {
+        setCards(CardsFromServer);
       })
       .catch((err) => {
         console.log(`Ошибка api промиса из promise.all: ${err}`);
       });
   }, []);
+
+  function handleCardLike(currentCard) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLikedByMe = currentCard.likes.some((ownerData) => ownerData._id === currentUser._id);
+
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(currentCard._id, isLikedByMe).then((newCardFromServer) => {
+      setCards((state) =>
+        state.map((oldCard) => (oldCard._id === currentCard._id ? newCardFromServer : oldCard))
+      );
+    });
+  }
+
+  function handleCardDelete(currentCard) {
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.sendСardDeleteRequest(currentCard._id).then(() => {
+      setCards((state) => state.filter((oldCard) => oldCard._id !== currentCard._id));
+    });
+  }
 
   return (
     <main className="content section section_size_narrow page__content">
@@ -44,7 +61,15 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
       <section className="elements section content__section" aria-label="Фотографии">
         <ul className="elements__list page__list">
           {cards.map((card) => {
-            return <Card key={card._id} cardData={card} onCardClick={onCardClick} />;
+            return (
+              <Card
+                key={card._id}
+                card={card}
+                onCardClick={onCardClick}
+                onCardLike={handleCardLike}
+                onCardDelete={handleCardDelete}
+              />
+            );
           })}
         </ul>
       </section>

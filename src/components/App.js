@@ -30,7 +30,7 @@ function App() {
 
     // возвращаем действия при размонтировании
     return () => {};
-  });
+  }, []);
 
   function handleCardClick(cardData) {
     setPopupWithImageOpen(true);
@@ -63,9 +63,9 @@ function App() {
         <div className="page__container">
           <Header />
           <Main
+            onEditAvatar={handleEditAvatarClick}
             onEditProfile={handleEditProfileClick}
             onAddPlace={handleAddPlaceClick}
-            onEditAvatar={handleEditAvatarClick}
             onCardClick={handleCardClick}
           />
           <Footer />

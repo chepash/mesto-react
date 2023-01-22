@@ -13,7 +13,7 @@ class Api {
     return res.json();
   }
 
-  getInitialCards() {
+  getCardList() {
     return fetch(`${this.baseUrl}/cards`, {
       headers: {
         authorization: this.authToken,
@@ -79,18 +79,9 @@ class Api {
     }).then(this._getResponseData);
   }
 
-  sendSetLikeRequest(cardId) {
+  changeLikeCardStatus(cardId, isLikedByMe) {
     return fetch(`${this.baseUrl}/cards/${cardId}/likes`, {
-      method: "PUT",
-      headers: {
-        authorization: this.authToken,
-      },
-    }).then(this._getResponseData);
-  }
-
-  sendRemoveLikeRequest(cardId) {
-    return fetch(`${this.baseUrl}/cards/${cardId}/likes`, {
-      method: "DELETE",
+      method: isLikedByMe ? "DELETE" : "PUT",
       headers: {
         authorization: this.authToken,
       },
