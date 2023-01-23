@@ -5,6 +5,9 @@ import Main from "./Main";
 import Footer from "./Footer";
 import PopupWithForm from "./PopupWithForm";
 import ImagePopup from "./ImagePopup";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
+import defaultAvatarPic from "../images/default_profile_pic.jpg";
 
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
@@ -15,7 +18,9 @@ function App() {
   const [isPopupWithImageOpen, setPopupWithImageOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
 
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState({ name: "", about: "", avatar: defaultAvatarPic });
+  //важно указать у currentUser начальные значения name и about,
+  //иначе реакт будет ругаться про начальные значения null или undefined для управляемых инпутов
 
   useEffect(() => {
     // действия при монтировании
@@ -57,6 +62,32 @@ function App() {
     setSelectedCard({});
   }
 
+  function handleUpdateUser({ name, about }) {
+    api
+      .sendUserInfo(name, about)
+      .then((userDataFromServer) => {
+        setCurrentUser(userDataFromServer);
+        closeAllPopups();
+      })
+      .then(() => {})
+      .catch((err) => {
+        console.log(`Ошибка api промиса sendUserInfo: ${err}`);
+      });
+  }
+
+  function handleUpdateAvatar({ avatar }) {
+    api
+      .sendUserAvatar(avatar)
+      .then((userDataFromServer) => {
+        setCurrentUser(userDataFromServer);
+        closeAllPopups();
+      })
+      .then(() => {})
+      .catch((err) => {
+        console.log(`Ошибка api промиса sendUserAvatar: ${err}`);
+      });
+  }
+
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
@@ -71,45 +102,17 @@ function App() {
           <Footer />
         </div>
 
-        {/* popup редактирования профиля */}
-
-        <PopupWithForm
-          name="profile"
-          title="Редактировать профиль"
-          ariaLable="Всплывающее окно: Редактировать профиль"
+        <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
-          buttonSubmitText="Сохранить">
-          <div className="form__inputs-container">
-            <label className="form__input-wrap">
-              <input
-                type="text"
-                placeholder="Имя пользователя"
-                className="form__input form__input_type_profile-name"
-                id="form__input_type_profile-name"
-                name="profileName"
-                minLength="2"
-                maxLength="40"
-                required
-              />
-              <span className="form__error" id="form__input_type_profile-name-error"></span>
-            </label>
+          onUpdateUser={handleUpdateUser}
+        />
 
-            <label className="form__input-wrap">
-              <input
-                type="text"
-                placeholder="Деятельность"
-                className="form__input form__input_type_profile-about"
-                id="form__input_type_profile-about"
-                name="profileAbout"
-                minLength="2"
-                maxLength="200"
-                required
-              />
-              <span className="form__error" id="form__input_type_profile-about-error"></span>
-            </label>
-          </div>
-        </PopupWithForm>
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
+        />
 
         {/* popup добавления карточки */}
         <PopupWithForm
@@ -144,29 +147,6 @@ function App() {
                 required
               />
               <span className="form__error" id="form__input_type_image-link-error"></span>
-            </label>
-          </div>
-        </PopupWithForm>
-
-        {/* popup редактирования аватара */}
-        <PopupWithForm
-          name="new-avatar"
-          title="Обновить аватар"
-          ariaLable="Всплывающее окно: Изменить аватар"
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          buttonSubmitText="Сохранить">
-          <div className="form__inputs-container">
-            <label className="form__input-wrap">
-              <input
-                type="url"
-                placeholder="Ссылка на картинку"
-                className="form__input form__input_type_avatar-link"
-                id="form__input_type_avatar-link"
-                name="placeAvatarLink"
-                required
-              />
-              <span className="form__error" id="form__input_type_avatar-link-error"></span>
             </label>
           </div>
         </PopupWithForm>

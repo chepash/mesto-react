@@ -32,6 +32,7 @@ function PopupWithForm(props) {
         <form
           action="some_URL"
           method="get"
+          onSubmit={props.onSubmit}
           className="form"
           name={`form_type_${props.name}`}
           noValidate>
