@@ -1,42 +1,17 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import Card from "./Card";
-import { api } from "../utils/api.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
+function Main({
+  onEditAvatar,
+  onEditProfile,
+  onAddPlace,
+  cards,
+  onCardClick,
+  onCardLike,
+  onCardDelete,
+}) {
   const currentUser = useContext(CurrentUserContext);
-
-  const [cards, setCards] = useState([]);
-
-  useEffect(() => {
-    api
-      .getCardList()
-      .then((CardsFromServer) => {
-        setCards(CardsFromServer);
-      })
-      .catch((err) => {
-        console.log(`Ошибка api промиса из promise.all: ${err}`);
-      });
-  }, []);
-
-  function handleCardLike(currentCard) {
-    // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLikedByMe = currentCard.likes.some((ownerData) => ownerData._id === currentUser._id);
-
-    // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(currentCard._id, isLikedByMe).then((newCardFromServer) => {
-      setCards((state) =>
-        state.map((oldCard) => (oldCard._id === currentCard._id ? newCardFromServer : oldCard))
-      );
-    });
-  }
-
-  function handleCardDelete(currentCard) {
-    // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.sendСardDeleteRequest(currentCard._id).then(() => {
-      setCards((state) => state.filter((oldCard) => oldCard._id !== currentCard._id));
-    });
-  }
 
   return (
     <main className="content section section_size_narrow page__content">
@@ -65,8 +40,8 @@ function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick }) {
                 key={card._id}
                 card={card}
                 onCardClick={onCardClick}
-                onCardLike={handleCardLike}
-                onCardDelete={handleCardDelete}
+                onCardLike={onCardLike}
+                onCardDelete={onCardDelete}
               />
             );
           })}

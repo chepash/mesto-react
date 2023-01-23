@@ -8,6 +8,7 @@ import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import defaultAvatarPic from "../images/default_profile_pic.jpg";
+import AddPlacePopup from "./AddPlacePopup";
 
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
@@ -19,8 +20,40 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({});
 
   const [currentUser, setCurrentUser] = useState({ name: "", about: "", avatar: defaultAvatarPic });
-  //важно указать у currentUser начальные значения name и about,
+  //важно указать у currentUser начальные значения name, about,
   //иначе реакт будет ругаться про начальные значения null или undefined для управляемых инпутов
+
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    api
+      .getCardList()
+      .then((CardsFromServer) => {
+        setCards(CardsFromServer);
+      })
+      .catch((err) => {
+        console.log(`Ошибка api промиса из promise.all: ${err}`);
+      });
+  }, []);
+
+  function handleCardLike(currentCard) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLikedByMe = currentCard.likes.some((ownerData) => ownerData._id === currentUser._id);
+
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(currentCard._id, isLikedByMe).then((newCardFromServer) => {
+      setCards((state) =>
+        state.map((oldCard) => (oldCard._id === currentCard._id ? newCardFromServer : oldCard))
+      );
+    });
+  }
+
+  function handleCardDelete(currentCard) {
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.sendСardDeleteRequest(currentCard._id).then(() => {
+      setCards((state) => state.filter((oldCard) => oldCard._id !== currentCard._id));
+    });
+  }
 
   useEffect(() => {
     // действия при монтировании
@@ -67,9 +100,10 @@ function App() {
       .sendUserInfo(name, about)
       .then((userDataFromServer) => {
         setCurrentUser(userDataFromServer);
+      })
+      .then(() => {
         closeAllPopups();
       })
-      .then(() => {})
       .catch((err) => {
         console.log(`Ошибка api промиса sendUserInfo: ${err}`);
       });
@@ -80,11 +114,39 @@ function App() {
       .sendUserAvatar(avatar)
       .then((userDataFromServer) => {
         setCurrentUser(userDataFromServer);
+      })
+      .then(() => {
         closeAllPopups();
       })
-      .then(() => {})
       .catch((err) => {
         console.log(`Ошибка api промиса sendUserAvatar: ${err}`);
+      });
+  }
+
+  function handleAddPlaceSubmit({ name, link }) {
+    // api
+    //   .sendUserAvatar(avatar)
+    //   .then((userDataFromServer) => {
+    //     setCurrentUser(userDataFromServer);
+    //     closeAllPopups();
+    //   })
+    //   .then(() => {})
+    //   .catch((err) => {
+    //     console.log(`Ошибка api промиса sendUserAvatar: ${err}`);
+    //   });
+    api
+      .sendNewCardInfo(name, link)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+      })
+      .then(() => {
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(`Ошибка api sendNewCardInfo: ${err}`);
+      })
+      .finally(() => {
+        //newCardPopup.renderLoading(false);
       });
   }
 
@@ -98,6 +160,9 @@ function App() {
             onEditProfile={handleEditProfileClick}
             onAddPlace={handleAddPlaceClick}
             onCardClick={handleCardClick}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+            cards={cards}
           />
           <Footer />
         </div>
@@ -114,42 +179,11 @@ function App() {
           onUpdateAvatar={handleUpdateAvatar}
         />
 
-        {/* popup добавления карточки */}
-        <PopupWithForm
-          name="new-card"
-          title="Новое место"
-          ariaLable="Всплывающее окно: Добавить карточку"
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-          buttonSubmitText="Создать">
-          <div className="form__inputs-container">
-            <label className="form__input-wrap">
-              <input
-                type="text"
-                placeholder="Название"
-                className="form__input form__input_type_place-name"
-                id="form__input_type_place-name"
-                name="placeName"
-                minLength="2"
-                maxLength="30"
-                required
-              />
-              <span className="form__error" id="form__input_type_place-name-error"></span>
-            </label>
-
-            <label className="form__input-wrap">
-              <input
-                type="url"
-                placeholder="Ссылка на картинку"
-                className="form__input form__input_type_image-link"
-                id="form__input_type_image-link"
-                name="placeImageLink"
-                required
-              />
-              <span className="form__error" id="form__input_type_image-link-error"></span>
-            </label>
-          </div>
-        </PopupWithForm>
+          onAddPlace={handleAddPlaceSubmit}
+        />
 
         {/* popup подтверждения удаления */}
         <PopupWithForm
