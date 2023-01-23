@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function Card({ card, onCardClick, onCardLike, onCardDelete }) {
+function Card({ card, onCardClick, onCardLike, onDeleteBtnClick }) {
   const currentUser = useContext(CurrentUserContext);
 
   const isLikedByMe = card.likes.some((ownerData) => {
@@ -19,8 +19,8 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
     onCardLike(card);
   }
 
-  function handleDeleteClick() {
-    onCardDelete(card);
+  function handleDeleteBtnClick() {
+    onDeleteBtnClick(card);
   }
 
   return (
@@ -29,7 +29,7 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
 
       {isOwn && (
         <button
-          onClick={handleDeleteClick}
+          onClick={handleDeleteBtnClick}
           type="button"
           aria-label="Удалить"
           className="button button_type_delete"></button>

@@ -1,6 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { RenderLoadingContext } from "../contexts/RenderLoadingContext";
 
 function PopupWithForm(props) {
+  const isLoading = useContext(RenderLoadingContext);
+
   function handleEscClose(e) {
     if (e.key === "Escape") {
       document.removeEventListener("keydown", handleEscClose);
@@ -40,9 +43,16 @@ function PopupWithForm(props) {
 
           {props.children}
 
-          <button type="submit" className="button button_type_submit">
-            {props.buttonSubmitText}
-          </button>
+          {!isLoading && (
+            <button type="submit" className="button button_type_submit">
+              {props.buttonSubmitText}
+            </button>
+          )}
+          {isLoading && (
+            <button type="submit" className="button button_type_submit" disabled>
+              Сохранение...
+            </button>
+          )}
         </form>
       </div>
     </section>

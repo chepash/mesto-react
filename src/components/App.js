@@ -1,27 +1,33 @@
 import { useEffect, useState } from "react";
 import { api } from "../utils/api.js";
+
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm";
+
 import ImagePopup from "./ImagePopup";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import defaultAvatarPic from "../images/default_profile_pic.jpg";
 import AddPlacePopup from "./AddPlacePopup";
+import ConfirmationPopup from "./ConfirmationPopup";
 
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { RenderLoadingContext } from "../contexts/RenderLoadingContext";
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isPopupWithImageOpen, setPopupWithImageOpen] = useState(false);
+  const [isConfirmationPopupOpen, setConfirmationPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
 
   const [currentUser, setCurrentUser] = useState({ name: "", about: "", avatar: defaultAvatarPic });
   //важно указать у currentUser начальные значения name, about,
   //иначе реакт будет ругаться про начальные значения null или undefined для управляемых инпутов
+
+  const [isLoading, setLoading] = useState(false);
 
   const [cards, setCards] = useState([]);
 
@@ -32,7 +38,7 @@ function App() {
         setCards(CardsFromServer);
       })
       .catch((err) => {
-        console.log(`Ошибка api промиса из promise.all: ${err}`);
+        console.log(`Ошибка api промиса getCardList: ${err}`);
       });
   }, []);
 
@@ -41,18 +47,35 @@ function App() {
     const isLikedByMe = currentCard.likes.some((ownerData) => ownerData._id === currentUser._id);
 
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(currentCard._id, isLikedByMe).then((newCardFromServer) => {
-      setCards((state) =>
-        state.map((oldCard) => (oldCard._id === currentCard._id ? newCardFromServer : oldCard))
-      );
-    });
+    api
+      .changeLikeCardStatus(currentCard._id, isLikedByMe)
+      .then((newCardFromServer) => {
+        setCards((state) =>
+          state.map((oldCard) => (oldCard._id === currentCard._id ? newCardFromServer : oldCard))
+        );
+      })
+      .catch((err) => {
+        console.log(`Ошибка api промиса changeLikeCardStatus: ${err}`);
+      });
   }
 
   function handleCardDelete(currentCard) {
-    // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.sendСardDeleteRequest(currentCard._id).then(() => {
-      setCards((state) => state.filter((oldCard) => oldCard._id !== currentCard._id));
-    });
+    setLoading(true);
+    // Отправляем запрос в API и после успешного удаления обновляем список карточек через state(массив карточек)
+    api
+      .sendСardDeleteRequest(currentCard._id)
+      .then(() => {
+        setCards((state) => state.filter((oldCard) => oldCard._id !== currentCard._id));
+      })
+      .then(() => {
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(`Ошибка api промиса sendСardDeleteRequest: ${err}`);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   useEffect(() => {
@@ -75,6 +98,11 @@ function App() {
     setSelectedCard(cardData);
   }
 
+  function handleDeletBtnClick(cardData) {
+    setConfirmationPopupOpen(true);
+    setSelectedCard(cardData);
+  }
+
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
   }
@@ -92,10 +120,12 @@ function App() {
     setAddPlacePopupOpen(false);
     setEditAvatarPopupOpen(false);
     setPopupWithImageOpen(false);
+    setConfirmationPopupOpen(false);
     setSelectedCard({});
   }
 
   function handleUpdateUser({ name, about }) {
+    setLoading(true);
     api
       .sendUserInfo(name, about)
       .then((userDataFromServer) => {
@@ -106,10 +136,14 @@ function App() {
       })
       .catch((err) => {
         console.log(`Ошибка api промиса sendUserInfo: ${err}`);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
   function handleUpdateAvatar({ avatar }) {
+    setLoading(true);
     api
       .sendUserAvatar(avatar)
       .then((userDataFromServer) => {
@@ -120,20 +154,14 @@ function App() {
       })
       .catch((err) => {
         console.log(`Ошибка api промиса sendUserAvatar: ${err}`);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
   function handleAddPlaceSubmit({ name, link }) {
-    // api
-    //   .sendUserAvatar(avatar)
-    //   .then((userDataFromServer) => {
-    //     setCurrentUser(userDataFromServer);
-    //     closeAllPopups();
-    //   })
-    //   .then(() => {})
-    //   .catch((err) => {
-    //     console.log(`Ошибка api промиса sendUserAvatar: ${err}`);
-    //   });
+    setLoading(true);
     api
       .sendNewCardInfo(name, link)
       .then((newCard) => {
@@ -146,7 +174,7 @@ function App() {
         console.log(`Ошибка api sendNewCardInfo: ${err}`);
       })
       .finally(() => {
-        //newCardPopup.renderLoading(false);
+        setLoading(false);
       });
   }
 
@@ -161,39 +189,39 @@ function App() {
             onAddPlace={handleAddPlaceClick}
             onCardClick={handleCardClick}
             onCardLike={handleCardLike}
+            onDeleteBtnClick={handleDeletBtnClick}
             onCardDelete={handleCardDelete}
             cards={cards}
           />
           <Footer />
         </div>
 
-        <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser}
-        />
+        <RenderLoadingContext.Provider value={isLoading}>
+          <EditProfilePopup
+            isOpen={isEditProfilePopupOpen}
+            onClose={closeAllPopups}
+            onUpdateUser={handleUpdateUser}
+          />
 
-        <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
-        />
+          <EditAvatarPopup
+            isOpen={isEditAvatarPopupOpen}
+            onClose={closeAllPopups}
+            onUpdateAvatar={handleUpdateAvatar}
+          />
 
-        <AddPlacePopup
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-          onAddPlace={handleAddPlaceSubmit}
-        />
+          <AddPlacePopup
+            isOpen={isAddPlacePopupOpen}
+            onClose={closeAllPopups}
+            onAddPlace={handleAddPlaceSubmit}
+          />
 
-        {/* popup подтверждения удаления */}
-        <PopupWithForm
-          name="confirmation"
-          title="Вы уверены?"
-          ariaLable="Всплывающее окно: Подтвердить удаление карточки"
-          isOpen={false}
-          onClose={closeAllPopups}
-          buttonSubmitText="Да"
-        />
+          <ConfirmationPopup
+            isOpen={isConfirmationPopupOpen}
+            onClose={closeAllPopups}
+            card={selectedCard}
+            onCardDelete={handleCardDelete}
+          />
+        </RenderLoadingContext.Provider>
 
         {/* popup просмотра изображения */}
         <ImagePopup card={selectedCard} isOpen={isPopupWithImageOpen} onClose={closeAllPopups} />

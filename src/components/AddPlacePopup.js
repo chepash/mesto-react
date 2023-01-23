@@ -1,10 +1,7 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import PopupWithForm from "./PopupWithForm";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
-  const currentUser = useContext(CurrentUserContext);
-
   const [placeName, setPlaceName] = useState("");
   const [placeLink, setLink] = useState("");
 
@@ -26,13 +23,6 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
       link: placeLink,
     });
   }
-
-  // После загрузки текущего пользователя из API
-  // его данные будут использованы в управляемых компонентах.
-  // useEffect(() => {
-  //   // setName(currentUser.name);
-  //   // setDescription(currentUser.about);
-  // }, [currentUser]);
 
   return (
     <PopupWithForm
