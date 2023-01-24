@@ -3,10 +3,7 @@ import PopupWithForm from "./PopupWithForm";
 import { useFormWithValidation } from "./useFormWithValidation";
 
 function AddPlacePopupValidation({ isOpen, onClose, onAddPlace }) {
-  const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation({
-    placeName: "",
-    placeLink: "",
-  });
+  const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation();
 
   function handleSubmit(e) {
     // Запрещаем браузеру переходить по адресу формы

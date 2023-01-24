@@ -56,7 +56,8 @@ function PopupWithForm({
           {!isLoading && (
             <button
               type="submit"
-              className={"button button_type_submit" + (isValid ? "" : " button_disabled")}>
+              className={"button button_type_submit" + (isValid ? "" : " button_disabled")}
+              disabled={!isValid}>
               {buttonSubmitText}
             </button>
           )}
