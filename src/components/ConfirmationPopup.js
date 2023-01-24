@@ -1,4 +1,3 @@
-import { useContext, useRef } from "react";
 import PopupWithForm from "./PopupWithForm";
 
 function ConfirmationPopup({ isOpen, onClose, card, onCardDelete }) {

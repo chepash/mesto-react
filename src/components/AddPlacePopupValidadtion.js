@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PopupWithForm from "./PopupWithForm";
 
-function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
+function AddPlacePopupValidation({ isOpen, onClose, onAddPlace }) {
   const [placeName, setPlaceName] = useState("");
   const [placeLink, setLink] = useState("");
 
@@ -32,7 +32,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
       name="new-card"
       title="Новое место"
       ariaLable="Всплывающее окно: Добавить карточку"
-      isOpen={isOpen}
+      isOpen={"true"}
       onClose={onClose}
       onSubmit={handleSubmit}
       buttonSubmitText="Создать">
@@ -71,4 +71,4 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
   );
 }
 
-export default AddPlacePopup;
+export default AddPlacePopupValidation;

@@ -12,6 +12,9 @@ import defaultAvatarPic from "../images/default_profile_pic.jpg";
 import AddPlacePopup from "./AddPlacePopup";
 import ConfirmationPopup from "./ConfirmationPopup";
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+import AddPlacePopupValidation from "./AddPlacePopupValidation";
+
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { RenderLoadingContext } from "../contexts/RenderLoadingContext";
 
@@ -32,13 +35,13 @@ function App() {
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
-    api
-      .getCardList()
-      .then((CardsFromServer) => {
-        setCards(CardsFromServer);
+    Promise.all([api.getUserInfo(), api.getCardList()])
+      .then(([userDataFromServer, cardsFromServer]) => {
+        setCurrentUser(userDataFromServer);
+        setCards(cardsFromServer);
       })
       .catch((err) => {
-        console.log(`Ошибка api промиса getCardList: ${err}`);
+        console.log(`Ошибка api getUserInfo/getCardList из promise.all: ${err}`);
       });
   }, []);
 
@@ -77,21 +80,6 @@ function App() {
         setLoading(false);
       });
   }
-
-  useEffect(() => {
-    // действия при монтировании
-    api
-      .getUserInfo()
-      .then((userDataFromServer) => {
-        setCurrentUser(userDataFromServer);
-      })
-      .catch((err) => {
-        console.log(`Ошибка api промиса getUserInfo: ${err}`);
-      });
-
-    // возвращаем действия при размонтировании
-    return () => {};
-  }, []);
 
   function handleCardClick(cardData) {
     setPopupWithImageOpen(true);
@@ -210,6 +198,13 @@ function App() {
           />
 
           <AddPlacePopup
+            isOpen={isAddPlacePopupOpen}
+            onClose={closeAllPopups}
+            onAddPlace={handleAddPlaceSubmit}
+          />
+
+          {/* удали меня ////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
+          <AddPlacePopupValidation
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}

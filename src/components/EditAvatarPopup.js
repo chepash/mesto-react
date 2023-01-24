@@ -1,10 +1,7 @@
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import PopupWithForm from "./PopupWithForm";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
-  const currentUser = useContext(CurrentUserContext);
-
   const avatarInputRef = useRef(); // записываем объект, возвращаемый хуком, в переменную
 
   function handleSubmit(e) {
@@ -15,14 +12,9 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
     onUpdateAvatar({
       avatar: avatarInputRef.current.value,
     });
-  }
 
-  // После загрузки текущего пользователя из API
-  // его данные будут использованы в управляемых компонентах.
-  // useEffect(() => {
-  //   setName(currentUser.name);
-  //   setDescription(currentUser.about);
-  // }, [currentUser]);
+    avatarInputRef.current.value = "";
+  }
 
   return (
     <PopupWithForm
