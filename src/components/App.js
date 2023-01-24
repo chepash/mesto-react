@@ -148,10 +148,12 @@ function App() {
       });
   }
 
-  function handleAddPlaceSubmit({ name, link }) {
+  function handleAddPlaceSubmit({ placeName, placeLink }) {
     setLoading(true);
+    console.log(`placeName: ${placeName}`);
+    console.log(`placeLink: ${placeLink}`);
     api
-      .sendNewCardInfo(name, link)
+      .sendNewCardInfo(placeName, placeLink)
       .then((newCard) => {
         setCards([newCard, ...cards]);
       })
@@ -197,11 +199,11 @@ function App() {
             onUpdateAvatar={handleUpdateAvatar}
           />
 
-          <AddPlacePopup
+          {/* <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
-          />
+          /> */}
 
           {/* удали меня ////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
           <AddPlacePopupValidation

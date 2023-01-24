@@ -15,6 +15,7 @@ function ConfirmationPopup({ isOpen, onClose, card, onCardDelete }) {
       ariaLable="Всплывающее окно: Подтвердить удаление карточки"
       isOpen={isOpen}
       onClose={onClose}
+      isValid={"true"}
       onSubmit={handleSubmit}
       buttonSubmitText="Да"
     />

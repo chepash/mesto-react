@@ -1,51 +1,63 @@
 import { useEffect, useContext } from "react";
 import { RenderLoadingContext } from "../contexts/RenderLoadingContext";
 
-function PopupWithForm(props) {
+function PopupWithForm({
+  name,
+  ariaLable,
+  title,
+  buttonSubmitText,
+  isOpen,
+  isValid,
+  onClose,
+  onSubmit,
+  children,
+}) {
   const isLoading = useContext(RenderLoadingContext);
 
   function handleEscClose(e) {
     if (e.key === "Escape") {
       document.removeEventListener("keydown", handleEscClose);
-      props.onClose();
+      onClose();
     }
   }
 
   useEffect(() => {
     document.addEventListener("keydown", handleEscClose);
-  }, [props.isOpen]);
+  }, [isOpen]);
 
   function handlePopupOverlayClick(e) {
     if (e.currentTarget === e.target) {
-      props.onClose();
+      onClose();
     }
   }
 
   return (
     <section
-      className={`popup section popup_type_${props.name} ${props.isOpen ? "popup_opened" : ""}`}
-      aria-label={`${props.ariaLable}`}
+      className={`popup section popup_type_${name} ${isOpen ? "popup_opened" : ""}`}
+      aria-label={`${ariaLable}`}
       onClick={handlePopupOverlayClick}>
       <button
         type="button"
         aria-label="Закрыть"
         className="button button_type_close popup__close"
-        onClick={props.onClose}></button>
+        onClick={onClose}></button>
       <div className="popup__container">
         <form
           action="some_URL"
           method="get"
-          onSubmit={props.onSubmit}
+          onSubmit={onSubmit}
           className="form"
-          name={`form_type_${props.name}`}
+          name={`form_type_${name}`}
           noValidate>
-          <h2 className="form__title">{props.title}</h2>
+          <h2 className="form__title">{title}</h2>
 
-          {props.children}
+          {children}
 
           {!isLoading && (
-            <button type="submit" className="button button_type_submit">
-              {props.buttonSubmitText}
+            <button
+              type="submit"
+              className={"button button_type_submit" + (isValid ? "" : " button_disabled")}>
+              {buttonSubmitText}
             </button>
           )}
           {isLoading && (
