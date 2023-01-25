@@ -1,30 +1,17 @@
-import { useState } from "react";
 import PopupWithForm from "./PopupWithForm";
+import { useFormWithValidation } from "./useFormWithValidation";
 
 function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
-  const [placeName, setPlaceName] = useState("");
-  const [placeLink, setLink] = useState("");
-
-  function handlePlaceNameChange(e) {
-    setPlaceName(e.target.value);
-  }
-
-  function handleLinkChange(e) {
-    setLink(e.target.value);
-  }
+  const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation();
 
   function handleSubmit(e) {
     // Запрещаем браузеру переходить по адресу формы
     e.preventDefault();
 
+    console.log(values);
     // Передаём значения управляемых компонентов во внешний обработчик
-    onAddPlace({
-      name: placeName,
-      link: placeLink,
-    });
-
-    setPlaceName("");
-    setLink("");
+    onAddPlace(values);
+    resetForm();
   }
 
   return (
@@ -34,6 +21,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
       ariaLable="Всплывающее окно: Добавить карточку"
       isOpen={isOpen}
       onClose={onClose}
+      isValid={isValid}
       onSubmit={handleSubmit}
       buttonSubmitText="Создать">
       <div className="form__inputs-container">
@@ -41,30 +29,44 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
           <input
             type="text"
             placeholder="Название"
-            value={placeName}
-            onChange={handlePlaceNameChange}
-            className="form__input form__input_type_place-name"
+            value={values.placeName ? values.placeName : ""}
+            onChange={handleChange}
+            className={
+              "form__input form__input_type_place-name" +
+              (errors.placeName ? " form__input_type_error" : "")
+            }
             id="form__input_type_place-name"
             name="placeName"
             minLength="2"
             maxLength="30"
             required
           />
-          <span className="form__error" id="form__input_type_place-name-error"></span>
+          <span
+            className={"form__error" + (errors.placeName ? " form__error_visible" : "")}
+            id="form__input_type_place-name-error">
+            {errors.placeName}
+          </span>
         </label>
 
         <label className="form__input-wrap">
           <input
             type="url"
             placeholder="Ссылка на картинку"
-            value={placeLink}
-            onChange={handleLinkChange}
-            className="form__input form__input_type_image-link"
+            value={values.placeLink ? values.placeLink : ""}
+            onChange={handleChange}
+            name="placeLink"
+            className={
+              "form__input form__input_type_image-link" +
+              (errors.placeLink ? " form__input_type_error" : "")
+            }
             id="form__input_type_image-link"
-            name="placeImageLink"
             required
           />
-          <span className="form__error" id="form__input_type_image-link-error"></span>
+          <span
+            className={"form__error" + (errors.placeLink ? " form__error_visible" : "")}
+            id="form__input_type_image-link-error">
+            {errors.placeLink}
+          </span>
         </label>
       </div>
     </PopupWithForm>

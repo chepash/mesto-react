@@ -12,9 +12,6 @@ import defaultAvatarPic from "../images/default_profile_pic.jpg";
 import AddPlacePopup from "./AddPlacePopup";
 import ConfirmationPopup from "./ConfirmationPopup";
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-import AddPlacePopupValidation from "./AddPlacePopupValidation";
-
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { RenderLoadingContext } from "../contexts/RenderLoadingContext";
 
@@ -199,14 +196,7 @@ function App() {
             onUpdateAvatar={handleUpdateAvatar}
           />
 
-          {/* <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit}
-          /> */}
-
-          {/* удали меня ////////////////////////////////////////////////////////////////////////////////////////////////////////// */}
-          <AddPlacePopupValidation
+          <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
