@@ -127,10 +127,10 @@ function App() {
       });
   }
 
-  function handleUpdateAvatar({ avatar }) {
+  function handleUpdateAvatar({ avatarLink }) {
     setLoading(true);
     api
-      .sendUserAvatar(avatar)
+      .sendUserAvatar(avatarLink)
       .then((userDataFromServer) => {
         setCurrentUser(userDataFromServer);
       })
@@ -147,8 +147,6 @@ function App() {
 
   function handleAddPlaceSubmit({ placeName, placeLink }) {
     setLoading(true);
-    console.log(`placeName: ${placeName}`);
-    console.log(`placeLink: ${placeLink}`);
     api
       .sendNewCardInfo(placeName, placeLink)
       .then((newCard) => {
