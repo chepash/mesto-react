@@ -9,34 +9,15 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
 
   const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation();
 
-  const [name, setName] = useState(currentUser.name);
-  const [description, setDescription] = useState(currentUser.about);
-
-  function handleNameChange(e) {
-    setName(e.target.value);
-  }
-
-  function handleDescriptionChange(e) {
-    setDescription(e.target.value);
-  }
-
   function handleSubmit(e) {
-    // Запрещаем браузеру переходить по адресу формы
     e.preventDefault();
-
     // Передаём значения управляемых компонентов во внешний обработчик
-    onUpdateUser({
-      name,
-      about: description,
-    });
+    onUpdateUser({ name: currentUser.name, about: currentUser.about, ...values });
   }
 
-  // После загрузки текущего пользователя из API
-  // его данные будут использованы в управляемых компонентах.
   useEffect(() => {
-    setName(currentUser.name);
-    setDescription(currentUser.about);
-  }, [currentUser]);
+    resetForm({ name: currentUser.name, about: currentUser.about }, {}, true);
+  }, [isOpen, currentUser]);
 
   return (
     <PopupWithForm
@@ -45,6 +26,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
       ariaLable="Всплывающее окно: Редактировать профиль"
       isOpen={isOpen}
       onClose={onClose}
+      isValid={isValid}
       onSubmit={handleSubmit}
       buttonSubmitText="Сохранить">
       <div className="form__inputs-container">
@@ -52,32 +34,46 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
           <input
             type="text"
             placeholder="Имя пользователя"
-            value={name}
-            onChange={handleNameChange}
-            className="form__input form__input_type_profile-name"
+            value={values.name ? values.name : currentUser.name}
+            onChange={handleChange}
+            name="name"
+            className={
+              "form__input form__input_type_profile-name" +
+              (errors.name ? " form__input_type_error" : "")
+            }
             id="form__input_type_profile-name"
-            name="profileName"
             minLength="2"
             maxLength="40"
             required
           />
-          <span className="form__error" id="form__input_type_profile-name-error"></span>
+          <span
+            className={"form__error" + (errors.name ? " form__error_visible" : "")}
+            id="form__input_type_profile-name-error">
+            {errors.name}
+          </span>
         </label>
 
         <label className="form__input-wrap">
           <input
             type="text"
             placeholder="Деятельность"
-            value={description}
-            onChange={handleDescriptionChange}
-            className="form__input form__input_type_profile-about"
+            value={values.about ? values.about : currentUser.about}
+            onChange={handleChange}
+            name="about"
+            className={
+              "form__input form__input_type_profile-about" +
+              (errors.about ? " form__input_type_error" : "")
+            }
             id="form__input_type_profile-about"
-            name="profileAbout"
             minLength="2"
             maxLength="200"
             required
           />
-          <span className="form__error" id="form__input_type_profile-about-error"></span>
+          <span
+            className={"form__error" + (errors.about ? " form__error_visible" : "")}
+            id="form__input_type_profile-about-error">
+            {errors.about}
+          </span>
         </label>
       </div>
     </PopupWithForm>

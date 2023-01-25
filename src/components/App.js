@@ -109,10 +109,10 @@ function App() {
     setSelectedCard({});
   }
 
-  function handleUpdateUser({ name, about }) {
+  function handleUpdateUser({ name: profileName, about }) {
     setLoading(true);
     api
-      .sendUserInfo(name, about)
+      .sendUserInfo(profileName, about)
       .then((userDataFromServer) => {
         setCurrentUser(userDataFromServer);
       })

@@ -2,9 +2,7 @@ import PopupWithForm from "./PopupWithForm";
 
 function ConfirmationPopup({ isOpen, onClose, card, onCardDelete }) {
   function handleSubmit(e) {
-    // Запрещаем браузеру переходить по адресу формы
     e.preventDefault();
-
     onCardDelete(card);
   }
 

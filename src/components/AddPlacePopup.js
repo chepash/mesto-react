@@ -5,11 +5,8 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
   const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation();
 
   function handleSubmit(e) {
-    // Запрещаем браузеру переходить по адресу формы
     e.preventDefault();
 
-    console.log(values);
-    // Передаём значения управляемых компонентов во внешний обработчик
     onAddPlace(values);
     resetForm();
   }
