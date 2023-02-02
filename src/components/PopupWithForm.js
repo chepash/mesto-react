@@ -14,15 +14,18 @@ function PopupWithForm({
 }) {
   const isLoading = useContext(RenderLoadingContext);
 
-  function handleEscClose(e) {
+  const handleEscClose = (e) => {
     if (e.key === "Escape") {
-      document.removeEventListener("keydown", handleEscClose);
       onClose();
     }
-  }
+  };
 
   useEffect(() => {
     document.addEventListener("keydown", handleEscClose);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscClose);
+    };
   }, [isOpen]);
 
   function handlePopupOverlayClick(e) {

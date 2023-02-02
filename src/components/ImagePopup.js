@@ -3,13 +3,16 @@ import { useEffect } from "react";
 function ImagePopup({ onClose, isOpen, card }) {
   function handleEscClose(e) {
     if (e.key === "Escape") {
-      document.removeEventListener("keydown", handleEscClose);
       onClose();
     }
   }
 
   useEffect(() => {
     document.addEventListener("keydown", handleEscClose);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscClose);
+    };
   }, [isOpen]);
 
   function handlePopupOverlayClick(e) {

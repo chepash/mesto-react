@@ -33,9 +33,9 @@ function App() {
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getCardList()])
-      .then(([userDataFromServer, cardsFromServer]) => {
-        setCurrentUser(userDataFromServer);
-        setCards(cardsFromServer);
+      .then(([user, cards]) => {
+        setCurrentUser(user);
+        setCards(cards);
       })
       .catch((err) => {
         console.log(`Ошибка api getUserInfo/getCardList из promise.all: ${err}`);
@@ -66,8 +66,6 @@ function App() {
       .sendСardDeleteRequest(currentCard._id)
       .then(() => {
         setCards((state) => state.filter((oldCard) => oldCard._id !== currentCard._id));
-      })
-      .then(() => {
         closeAllPopups();
       })
       .catch((err) => {
@@ -133,8 +131,6 @@ function App() {
       .sendUserAvatar(avatarLink)
       .then((userDataFromServer) => {
         setCurrentUser(userDataFromServer);
-      })
-      .then(() => {
         closeAllPopups();
       })
       .catch((err) => {
@@ -151,8 +147,6 @@ function App() {
       .sendNewCardInfo(placeName, placeLink)
       .then((newCard) => {
         setCards([newCard, ...cards]);
-      })
-      .then(() => {
         closeAllPopups();
       })
       .catch((err) => {

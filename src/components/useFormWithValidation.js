@@ -2,8 +2,6 @@ import React, { useCallback } from "react";
 
 //хук управления формой и валидации формы
 
-//ощущение словно списал, старший студент выложила этот вариант в пачке для ознакомления.
-//хоть и пришлось поразбираться как с этим работать
 export function useFormWithValidation() {
   const [values, setValues] = React.useState({});
   const [errors, setErrors] = React.useState({});
